@@ -23,3 +23,8 @@ passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
 }
+
+
+// Check with data model and schema to integrate
+// userid with displayname from spotify
+

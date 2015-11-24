@@ -37,6 +37,9 @@ module.exports = function(app, passport) {
     }));
 });
 
+  //// GET LOG OUT WORKING
+
+
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
@@ -98,5 +101,10 @@ app.get('/callback', function(req, res) {
     });
   }
 });
+
+app.get('/logout', function(req, res){
+    req.logout();
+    res.redirect('/');
+  });
 
 }
