@@ -33,7 +33,7 @@ require('ejs').delimiter = '$';
 
 // Create local variables for use thoughout the application.
 app.locals.title = app.get('title');
-
+app.locals.underscore = require('underscore');
 // Logging layer.
 app.use(logger('dev'));
 
@@ -50,6 +50,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+<<<<<<< HEAD
 // Spotify middleware
 
 app.get('/auth/spotify',
@@ -65,6 +66,8 @@ app.get('/callback',
     // Successful authentication, redirect home.
     res.redirect('/circles');
 });
+=======
+>>>>>>> 927567b43cfc8dcf8d693a789734bd14c93bec90
 require('./config/passport')(passport);
 
 var endpoint = 'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb';
@@ -90,10 +93,13 @@ app.use(debugReq);
 // Defines all of our "dynamic" routes.
 app.use('/', routes);
 
+<<<<<<< HEAD
 require('./routes/index')(app, passport)
 
 
 
+=======
+>>>>>>> 927567b43cfc8dcf8d693a789734bd14c93bec90
 // Catches all 404 routes.
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -118,5 +124,6 @@ function debugReq(req, res, next) {
   debug('body:',   req.body);
   next();
 }
+
 app.listen(8000);
 module.exports = app;
