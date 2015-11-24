@@ -6,6 +6,7 @@ var userSchema = new Schema({
   displayName: String,
   spotifyId: String,
   profileImage: String,
+  playlist: String,
   created: { type: Date, default: Date.now },
   circles: [{type: Schema.Types.ObjectId, ref: 'Circle'}]
 });
