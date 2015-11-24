@@ -125,5 +125,4 @@ function debugReq(req, res, next) {
   next();
 }
 
-app.listen(8000);
 module.exports = app;

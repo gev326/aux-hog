@@ -2,17 +2,39 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     debug    = require('debug')('app:models');
 
+var spotify = require('../config/spotifyApiHelper');
+
 var userSchema = new Schema({
   displayName: String,
+  email: String,
   spotifyId: String,
   profileImage: String,
   created: { type: Date, default: Date.now },
   circles: [{type: Schema.Types.ObjectId, ref: 'Circle'}]
 });
 
+userSchema.methods.getPlaylists = function(callback) {
+  spotify.getPlaylists(this.spotifyId, callback);
+}
+
 var User = mongoose.model('User', userSchema);
 
 module.exports = User;
+
+
+/*
+
+
+User.findOne(..., function(u) {
+  u.getPlaylists(function(playlists) {
+    res.render()
+  })
+})
+
+
+
+*/
+
 
 // {
 //  "display_name" : "Lilla Namo",
