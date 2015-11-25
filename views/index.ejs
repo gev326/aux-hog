@@ -5,15 +5,43 @@
     <$- include('partials/head') $>
   </head>
   <body>
+    <main>
+    <$ if (user) { $>
+      <div>
+        <a href="/logout">Logout</a>
+        <script type="text/template" id="circles-template">
+        <h1>Welcome, <%= name %></h1>
+        <% if (userCircles.length > 0) { %>
+        <p>You have circles</p>
+        <% } else { %>
+          <p>You do not have circles, start looking for some homies and create a circle!</p>
+          <div class="input-field">
+            <input id="search" type="search" placeholder="search for friends">
+          </div>
+        <% } %>
+        </script>
+      </div>
+    <$ } else { $>
+      <div>
+        <h1>First, log in to spotify</h1>
+        <a href="/login">Log in</a>
+      </div>
+    <$ } $>
+    </main>
 
-  <h1>Test!</h1>
-  <div id="login">
-  </div>
+
+  <script>
+    var name        = '';
+    var userCircles = '';
+    <$ if (user) { $>
+      name = '<$= user.displayName $>';
+      userCircles = '<$= user.circles $>';
+    <$ } $>
+  </script>
+
 
   <$- include('partials/scripts') $>
   <$- include('partials/templates') $>
-
-
   </body>
 
 </html>

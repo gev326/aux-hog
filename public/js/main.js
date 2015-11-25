@@ -2,16 +2,33 @@ console.log('JS loaded!');
 
 $(document).ready(function() {
 
+var circles   = _.template($('#circles-template').html());
+var $destination  = $('main');
 
-var login     = _.template($('#login-template').html());
-var circles   = _.template($('#circles').html());
+$destination.append(circles);
 
-var $destination,
-    $templateEl;
+var filteredUsers = [],
+    searchName    = '';
 
-$destination = $('#login');
+var baseUri       = 'https://api.spotify.com/v1/users/';
 
+var buildUri = function(nameInput) {
+  var searchParam = nameInput
+                    .split(",")
+                    .map(function(str){
+                      return encodeURIComponent(str.trim());
+                    });
+  return baseUri + searchParam
+}
 
-$destination.append(login);
+$function
+
+function applyFilterAndSort() {
+  if (searchName) {
+    filteredUsers = _.filter(buildUri(), function(user) {
+
+    })
+  }
+}
 
 });
