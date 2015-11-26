@@ -6,19 +6,7 @@ var express     = require('express'),
 
 // Require controllers.
 var welcomeController = require('../controllers/welcome');
-<<<<<<< HEAD
-var usersController   = require('../controllers/users');
-var circlesController = require('../controllers/circles');
-// root path:
-router.get('/', welcomeController.index);
 
-// users resource paths:
-router.get('/users',     usersController.index);
-router.get('/users/:id', usersController.show);
-router.get('/circles', circlesController.index);
-
-
-=======
 
 // root path:
 router.get('/', welcomeController.index);
@@ -84,7 +72,6 @@ router.get('/callback',
     // Successful authentication, redirect home.
     res.redirect('/');
 });
->>>>>>> 927567b43cfc8dcf8d693a789734bd14c93bec90
 
 router.get('/logout', function(req, res){
   req.logout();
