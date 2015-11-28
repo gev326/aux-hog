@@ -9,7 +9,6 @@ var cookieParser = require('cookie-parser');
 var session      = require('express-session');
 var passport     = require('passport');
 var querystring  = require('querystring');
-var locus        = require('locus');
 
 require('dotenv').load();
 // Load local libraries.
@@ -51,22 +50,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Spotify middleware
-
-app.get('/auth/spotify',
-  passport.authenticate('spotify', {scope: ['user-read-email', 'user-read-private'], showDialog: true }),
-  function(req, res){
-   // The request will be redirected to spotify for authentication, so this
-   // function will not be called.
-});
-
-app.get('/callback',
-  passport.authenticate('spotify', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/circles');
-});
-
 require('./config/passport')(passport);
 
 var endpoint = 'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb';
@@ -91,11 +74,6 @@ app.use(debugReq);
 
 // Defines all of our "dynamic" routes.
 app.use('/', routes);
-
-
-require('./routes/index')(app, passport)
-
-
 
 // Catches all 404 routes.
 app.use(function(req, res, next) {

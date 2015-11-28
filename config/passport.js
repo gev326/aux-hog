@@ -22,10 +22,21 @@ module.exports = function(passport) {
       } else {
         debug("OAuth successful, user not found!");
 
+        var image;
+        function getImage() {
+          if (profile.images.length > 0) {
+            image = profile.images[0].url;
+          } else {
+            image = 'http://www.sessionlogs.com/media/icons/defaultIcon.png'
+          }
+        }
+        getImage();
+
         var newUser = new User({
           displayName: profile.displayName || profile.username,
           email:       profile.emails[0].value,
           spotifyId:   profile.id,
+          profileImage: image,
           circles: []
         });
 
@@ -49,8 +60,3 @@ module.exports = function(passport) {
   })
   });
 }
-
-
-// Check with data model and schema to integrate
-// userid with displayname from spotify
-
