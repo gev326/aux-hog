@@ -57,7 +57,7 @@ var stateKey = 'spotify_auth_state';
       response_type: 'code',
       client_id: process.env.CLIENT_ID,
       scope: scope,
-      redirect_uri: '/callback',
+      redirect_uri: 'https://peaceful-tor-6779.herokuapp.com/callback',
       state: state
     }));
 });
