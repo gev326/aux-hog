@@ -4,17 +4,34 @@ var express     = require('express'),
     passport    = require('passport');
 
 
+
+
 // Require controllers.
 var welcomeController = require('../controllers/welcome');
-var circlesController = require('../controllers/api');
+var apiController = require('../controllers/api');
+var circlesController = require('../controllers/circles');
+
+
+var circlesRoute = router.route('/circles:circle_id');
+
+circlesRoute.get(function(req,res){
+  Circle.findById(req.params.circle_id, function(err, circle){
+    if(err)
+      res.send(err);
+
+    res.json(circle);
+  })
+})
 
 
 // root path:
 router.get('/', welcomeController.index);
 
-router.post('/circles', circlesController.createCircle);
+router.post('/users', apiController.addCircleUsers);
 
-router.post('/users', circlesController.addCircleUsers);
+// router.get('/circles/:id', apiController.indexCircle);
+
+// router.get('/circles', circlesController.index);
 
 router.get('/libraries',function(req,res) {
 //  eval(locus);
@@ -57,7 +74,7 @@ var stateKey = 'spotify_auth_state';
       response_type: 'code',
       client_id: process.env.CLIENT_ID,
       scope: scope,
-      redirect_uri: 'https://peaceful-tor-6779.herokuapp.com/callback',
+      redirect_uri: 'http://localhost:3000/callback',
       state: state
     }));
 });

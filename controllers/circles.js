@@ -1,5 +1,7 @@
+
+
 var index = function(req, res, next) {
-  res.render('circles/index');
+  res.json(index);
 };
 
 

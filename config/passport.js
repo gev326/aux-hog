@@ -7,7 +7,7 @@ module.exports = function(passport) {
   passport.use(new SpotifyStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://peaceful-tor-6779.herokuapp.com/callback"
+    callbackURL: "http://localhost:3000/callback" // change from localhost/3000 to web site addy
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({ 'spotifyId': profile.id }, function(err, user) {

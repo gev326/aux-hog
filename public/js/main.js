@@ -78,13 +78,6 @@ $(document).ready(function() {
       $('#friend').empty();
       doSearch(currentSearch);
 
-    // if (evt.keyCode === 13) {
-    //   $('#friend').empty();
-    //   doSearch(currentSearch);
-    // } else {
-    //   $('#friend').empty();
-    //   doSearch(currentSearch);
-    // }
   });
 
   $('#createCircle').on('click', function(){
@@ -92,9 +85,11 @@ $(document).ready(function() {
       friendId = $(friend).attr('id');
       $.post('/users', {spotifyId: friendId},
         function(data){
+          console.log('over here fucker');
+          console.log("this is data stupid   " + data);
           var newId = data._id;
           friendsToAdd.push(newId);
-          console.log(friendsToAdd);
+          console.log("friends to add:    " + friendsToAdd);
         });
     });
 
@@ -107,12 +102,12 @@ $(document).ready(function() {
           title: title,
           users: JSON.stringify(friendsToAdd)
         },
-        sucess: function(data){
+        success: function(data){
           console.log(data);
         }
       });
     }
-    setTimeout(postCircles, 500);
+  // setTimeout(postCircles, 500);
   });
 
 });

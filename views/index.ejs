@@ -25,6 +25,8 @@
         <button id="createCircle">Create Circle</button>
         <% if (userCircles.length > 0) { %>
         <p>You have circles</p>
+
+
         <% } else { %>
           <p>You do not have circles, start looking for some homies and create a circle!</p>
 
@@ -46,7 +48,7 @@
     var userCircles = [];
     <$ if (user) { $>
       name = '<$= user.displayName $>';
-      userCircles = <$= JSON.stringify(user.circles) $>;
+      userCircles = '<$= JSON.stringify(user.circles) $>';
     <$ } $>
   </script>
 
