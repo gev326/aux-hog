@@ -7,7 +7,7 @@ module.exports = function(passport) {
   passport.use(new SpotifyStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://peaceful-tor-6779.herokuapp.com/callback" // change from localhost/3000 to web site addy
+    callbackURL: "http://localhost:3000/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({ 'spotifyId': profile.id }, function(err, user) {
@@ -15,23 +15,16 @@ module.exports = function(passport) {
       if (user) {
         debug("OAuth successful, found user: ", user.displayName);
         user.accessToken = accessToken;
-      //  user.save(function(user){
-        return done(null, user);
-    //  })
+
+        if(user.accessToken) {
+          user.save(function(err, user) {
+            if (err) return done(err);
+            return done(null, user);
+          });
+        }
 
       } else {
         debug("OAuth successful, user not found!");
-
-// <<<<<<< HEAD
-        var image;
-        function getImage() {
-          if (profile.images.length > 0) {
-            image = profile.images[0].url;
-          } else {
-            image = 'http://www.sessionlogs.com/media/icons/defaultIcon.png'
-          }
-        }
-        getImage();
 
         // var image;
         // function getImage() {
@@ -42,18 +35,14 @@ module.exports = function(passport) {
         //   }
         // }
         // getImage();
-// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
 
         var newUser = new User({
-          displayName: profile.displayName || profile.username,
-          email:       profile.emails[0].value,
-          spotifyId:   profile.id,
-// <<<<<<< HEAD
-          profileImage: image,
-// =======
+          displayName:  profile.displayName || profile.username,
+          email:        profile.emails[0].value,
+          spotifyId:    profile.id,
           profileImage: null,
-// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
-          circles: []
+          circles:      [],
+          accessToken:  accessToken
         });
 
         newUser.save(function(err, user) {

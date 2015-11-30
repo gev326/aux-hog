@@ -1,75 +1,47 @@
 var express     = require('express'),
     router      = new express.Router(),
     querystring = require('querystring'),
-    passport    = require('passport');
-
-
-
+    passport    = require('passport'),
+    Circle      = require('../models/circle');
 
 // Require controllers.
 var welcomeController = require('../controllers/welcome');
-
-var apiController = require('../controllers/api');
-var circlesController = require('../controllers/circles');
-
-
-var circlesRoute = router.route('/circles:circle_id');
-
-circlesRoute.get(function(req,res){
-  Circle.findById(req.params.circle_id, function(err, circle){
-    if(err)
-      res.send(err);
-
-    res.json(circle);
-  })
-})
-
-
 var circlesController = require('../controllers/circles');
 var apiController     = require('../controllers/api');
-// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
+var spotify           = require('../config/spotifyApiHelper');
+
 
 // =============Root Path==============
 // ====================================
 router.get('/', welcomeController.index);
 
-// <<<<<<< HEAD
-// router.post('/users', apiController.addCircleUsers);
-
-// router.get('/circles/:id', apiController.indexCircle);
-
-// router.get('/circles', circlesController.index);
-// =======s
 // =============API Routes=============
 // ====================================
 router.get('/indexCircle', apiController.indexCircle);
 router.get('/indexCircle/:id', apiController.showCircle);
 
-
+router.get('/findCircle', apiController.findCircle);
 router.get('/indexUser', apiController.indexUser);
 
 // =============App Routes=============
 // ====================================
-router.post('/circles', circlesController.createCircle);
+router.delete('/circles/:id', circlesController.destroyCircle);
 
-router.delete('/indexCircle/:id', circlesController.destroyCircle)
-
-router.get('/testLib', function(req, res) {
-  Circle.find({}, function(err, circles) {
-    spotify.buildStation(req.query._id, req.user.accessToken).
+router.post('/circles', isLoggedIn, circlesController.createCircle);
+router.get('/testLib', isLoggedIn, function(req,res) {
+    spotify.buildStation(req.query.disId, req.user.accessToken).
       then(function(station) {
         res.json(station);
         console.log(station);
       }).
       then(function(){
+        console.log('hey bu')
+        console.log()
         res.redirect('/')
       });
-  });
 });
 
-
-
-router.get('/libraries', function(req, res) {
+router.get('/libraries', isLoggedIn, function(req, res) {
   var spotify = require('./spotifyApiHelper');
   var Circle = require('../models/circle');
   Circle.find({}, function(err, circles) {
@@ -105,7 +77,7 @@ res.redirect('https://accounts.spotify.com/authorize?' +
     response_type: 'code',
     client_id: process.env.CLIENT_ID,
     scope: scope,
-    redirect_uri: 'https://peaceful-tor-6779.herokuapp.com/callback',
+    redirect_uri: 'http://localhost:3000/callback',
     state: state
   }));
 });
