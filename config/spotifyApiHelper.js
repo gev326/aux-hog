@@ -1,19 +1,15 @@
 var request = require('request'),
     async   = require('async');
-
 var Circle = require('../models/circle');
 var locus = require('locus');
 
 function buildPlaylistUri(userId) {
   return `https:\/\/api.spotify.com/v1/users/${userId}/playlists`
 }
-
 function buildTracklistUri(playlistId, userId) {
   return `https:\/\/api.spotify.com/v1/users/${userId}/playlists/${playlistId}/tracks`;
 }
-
 module.exports = {
-
   buildPlaylistUri: buildPlaylistUri,
   buildTracklistUri: buildTracklistUri,
 
@@ -30,7 +26,6 @@ module.exports = {
       callback(playlists);
     });
   },
-
   getTracks: function(playlistId, userId, token, callback) {
     var options = {
       url: buildTracklistUri(playlistId, userId),
@@ -44,61 +39,97 @@ module.exports = {
       callback(tracklist);
     });
   },
-
   buildLibraries: function(circleId, accessToken) {
     var self = this;
     var iter = 0;
+    return new Promise(function(resolve, reject) {
+      Circle.findById(circleId).populate('users').exec(function(err, circle) {
+        var circlePromises = circle.users.map(function(user){
+          var userLib = {
+            name: user.displayName,
+            tracks: [],
+          };
+          return new Promise(function(resolve, reject) {
+            self.getPlaylists(user.spotifyId, accessToken, function(playlists){
+              if (playlists.error) {
+                reject(playlists.error.message);
+                return;
+              };
+              var trackPromises = playlists.items.map(function(playlist) {
+                if (playlist.owner.id === user.spotifyId) {
+                  return new Promise(function(resolve, reject) {
+                    self.getTracks(playlist.id, user.spotifyId, accessToken, function(tracks){
+                      tracks.items.forEach(function(track){
+                        track.playlistName = playlist.name;
+                        userLib.tracks.push(track);
+                      });
+                      resolve();
+                    }); // tracks
+                  });
+                } // end the if statement
+              }).filter(function(val){
+                return val !== undefined;
+              });
+              Promise.all(trackPromises).then(function(value) {
+                value.push(userLib);
+                resolve(userLib);
+              });
+            }); // all playlists
+          });
+        }); // each user
+        Promise.all(circlePromises).then(function(libraries) {
+          resolve(libraries);
+        }, function(thang) {
+          console.log(thang);
+        });
+      }); // all users
+    });
+  },
+  buildStation: function(circleId, accessToken) {
+    self = this;
+    var p1 = new Promise(function(resolve, reject) {
+      var libraryPromise = self.buildLibraries(circleId, accessToken);
+      libraryPromise.then(function(libraries) {
+        var pullTracksResult = pullTracks(libraries);
+        resolve(pullTracksResult);
+      }, function(thing) {
+        console.log(thing);
+      });
+    });
+    function pullTracks(userLibs){
+      var isNullOrUndefined = function(element, index, array) {
+        return element === null || element === undefined;
+      };
 
-    var libraries = [];
-    Circle.findById(circleId).populate('users').exec(function(err, circle) {
-      console.log(circle);
-
-      circle.users.forEach(function(user){
-        var userLib = {
-          name: user.displayName,
-          tracks: [],
-        };
-
-        console.log('user: ', user.spotifyId);
-        self.getPlaylists(user.spotifyId, accessToken, function(playlists){
-          if (playlists.error) console.log(playlists.error.message);
-
-          console.log('parsing playlists; loaded:', playlists.items.length);
-
-          async.each(playlists.items, function(playlist, nextPlaylist) {
-            console.log('playlist:', iter, playlist.name);
+      var masterPlaylist = [];
+      iter = 0;
+      for (var i = 0; i < 10; i++) {
+        for (var x = 0; x < userLibs.length; x++) {
+          var newIndex = Math.floor(Math.random()*userLibs[x].tracks.length);
+          var nextTrack = userLibs[x].tracks[newIndex];
+          if (userLibs[x].tracks.every(isNullOrUndefined)) {
+            console.log(userLibs[x].name + ", add more songs to your Spotify playlists!");
+            return masterPlaylist.join();
+          }
+          if (nextTrack.track.id === null || (masterPlaylist.join().indexOf(nextTrack.track.id) > -1)) {
+            while (nextTrack.track.id === null || (masterPlaylist.join().indexOf(nextTrack.track.id) > -1)) {
+              newIndex = Math.floor(Math.random()*userLibs[x].tracks.length);
+              nextTrack = userLibs[x].tracks[newIndex];
+              userLibs[x].tracks.splice(newIndex, 1);
+            }
+            masterPlaylist.push(nextTrack.track.id);
             iter++;
-            if (playlist.owner.id === user.spotifyId) {
-
-              self.getTracks(playlist.id, user.spotifyId, accessToken, function(tracks){
-
-                tracks.items.forEach(function(track){
-                  track.playlistName = playlist.name;
-                  userLib.tracks.push(track);
-                });
-
-                console.log('  tracks loaded!');
-                nextPlaylist();
-              }); // tracks
-            } else {
-              console.log('  skipped playlist…')
-              nextPlaylist();
-            } // end the if statement
-          }, function(err) {
-            if (err) console.log(err);
-            console.log('all user\'s playlists loaded');
-            libraries.push(userLib);
-            console.log("LIBRARIES:", libraries.length);
-            libraries.forEach(function(library) {
-              console.log(library.name + " " + library.tracks.length)
-            });
-          }); // each playlist
-        }); // all playlists
-
-      }); // each user
-    }); // all users
-
-    return libraries;
+            console.log(iter + '. "' + nextTrack.track.name + '", from ' + nextTrack.playlistName + ' (' + userLibs[x].name + ')');
+          } else {
+              userLibs[x].tracks.splice(newIndex, 1);
+              masterPlaylist.push(nextTrack.track.id);
+              iter++;
+              console.log(iter + '. "' + nextTrack.track.name + '", from ' + nextTrack.playlistName + ' (' + userLibs[x].name + ')');
+          };
+        };
+        return masterPlaylist.join();
+      };
+      return p1;
+    }
   }
-
 }

@@ -4,6 +4,7 @@ var spotify = require('../config/spotifyApiHelper');
 var locus = require('locus');
 var async = require('async');
 
+
 var addCircleUsers = function(req, res, done){
   User.findOne(req.body, function(err, user) {
     if (err) return done(err);
@@ -23,12 +24,15 @@ var addCircleUsers = function(req, res, done){
 };
 
 
+// =======
+// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
 var indexCircle = function(req, res) {
   Circle.find({}, function(err, records) {
     res.json(records);
   });
 };
 
+// <<<<<<< HEAD
 var createCircle = function(req, res, done) {
   var circle = new Circle(req.body);
   circle.creator = req.user._id;
@@ -51,24 +55,27 @@ var createCircle = function(req, res, done) {
     });
   });
 };
-
-var updateCircle = function(req, res) {
-  req.record.set(req.body);
-  req.record.save(function (err, record) {
-    res.json(record);
+var showCircle = function(req, res){
+  var id = req.params.id;
+  Circle.findById(id, function(err, circle){
+    console.log("GOT TO THIS");
+    if (err) {
+      res.send(err);
+    }
+    res.json(circle);
+// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
   });
 };
 
-var destroyCircle = function(req, res) {
-  req.record.remove(function (err, record) {
-    res.json(record);
+
+var indexUser = function(req, res) {
+  User.find({}, function(err, records) {
+    res.json(records);
   });
 };
 
 module.exports = {
-  addCircleUsers: addCircleUsers,
   indexCircle: indexCircle,
-  createCircle: createCircle,
-  updateCircle: updateCircle,
-  destroyCircle: destroyCircle
+  indexUser: indexUser,
+  showCircle: showCircle
 }

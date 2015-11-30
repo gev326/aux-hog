@@ -9,6 +9,7 @@ var env = require('./environment');
 
 // Use different database URIs based on whether an env var exists.
 var dbUri = env.MONGOLAB_URI ||
+
             'mongodb://localhost/' + env.SAFE_TITLE;
 
 if (!env.MONGOLAB_URI) {
@@ -17,6 +18,7 @@ if (!env.MONGOLAB_URI) {
     console.log("YOU MUST BOW BEFORE THE MONGOD FIRST, MORTAL!");
     process.exit(0);
   });
+
 }
 
 mongoose.connect(dbUri);

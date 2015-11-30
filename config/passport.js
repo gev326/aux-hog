@@ -7,7 +7,7 @@ module.exports = function(passport) {
   passport.use(new SpotifyStrategy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/callback" // change from localhost/3000 to web site addy
+    callbackURL: "https://peaceful-tor-6779.herokuapp.com/callback" // change from localhost/3000 to web site addy
   },
   function(accessToken, refreshToken, profile, done) {
     User.findOne({ 'spotifyId': profile.id }, function(err, user) {
@@ -22,6 +22,7 @@ module.exports = function(passport) {
       } else {
         debug("OAuth successful, user not found!");
 
+// <<<<<<< HEAD
         var image;
         function getImage() {
           if (profile.images.length > 0) {
@@ -32,11 +33,26 @@ module.exports = function(passport) {
         }
         getImage();
 
+        // var image;
+        // function getImage() {
+        //   if (profile.images.length > 0) {
+        //     image = profile.images[0].url;
+        //   } else {
+        //     image = 'http://www.sessionlogs.com/media/icons/defaultIcon.png'
+        //   }
+        // }
+        // getImage();
+// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
+
         var newUser = new User({
           displayName: profile.displayName || profile.username,
           email:       profile.emails[0].value,
           spotifyId:   profile.id,
+// <<<<<<< HEAD
           profileImage: image,
+// =======
+          profileImage: null,
+// >>>>>>> 55636ee58450cd74e49b98d24f9cb8c1266632fb
           circles: []
         });
 
