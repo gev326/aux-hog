@@ -12,7 +12,7 @@ Simply log in with your Spotify Account, add your friends, and we will generate 
 
 ##Technologies Used
 
-Development | APIs | Deplployment
+Development | APIs | Deployment
 ------------|------|-------------
 HTML | Spotify | Heroku
 CSS | | MongoLab
@@ -25,7 +25,7 @@ Underscore |
 
 ##API Documentation
 
-Method | Parameters | Description | Exposed
+Method | Parameters | Description | Public
 -------------|------|-----------|-------
 `indexCircle` | `/indexCircle` | displays all circles in the database | Yes
 `showCircle` | `/indexCircle/:id` | finds a circle by an id | Yes
