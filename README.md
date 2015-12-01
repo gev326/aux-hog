@@ -94,5 +94,7 @@ To run the application locally you will need to:
 ​
 ​
 ___
-​
+
+
+
 © Boom Squad - Ben Benjamin, Gev Gharadaghi, Judd Hood, Melissa Wilcox, Mike Klophaus
