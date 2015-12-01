@@ -42,9 +42,6 @@ Tasks were delegated and roles were identified as a mutual team decision. The pl
 [Pi Radio](http://www.pirs.fm)
 ​
 
-##Model/Wireframes
-
-[Model/Wireframe](http://rydr79.axshare.com/#p=login)
 ​
 
 ##Challenges
